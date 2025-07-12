@@ -11,9 +11,5 @@ dnf5 install -y \
     hexchat \
     ardour7 \
     tokei \
-    lsd \
-    bat \
     btop \
     ufw \
-    tealdeer \
-    zoxide \

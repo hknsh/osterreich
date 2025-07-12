@@ -15,6 +15,15 @@ osterreich-install-flatpaks:
     xargs -a <(curl --retry 3 -sL https://raw.githubusercontent.com/hknsh/osterreich/main/repo_files/flatpaks) flatpaks --system -y install
     echo "Installation complete."
 
+[group('Install')]
+osterreich-install-brews:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    echo "Installing homebrews..."
+    xargs -a <(curl --retry 3 -sL https://raw.githubusercontent.com/hknsh/osterreich/main/repo_files/brews) brew install
+    echo "Installation complete."
+
 [group('Setup')]
 osterreich-configure-ufw:
     #!/usr/bin/env bash

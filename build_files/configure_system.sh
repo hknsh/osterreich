@@ -12,9 +12,8 @@ QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}.%{arch}' "k
 
 chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
 
-# Set hostname
-echo osterreich > /etc/hostname
-echo "127.0.0.1   localhost osterreich" >> /etc/hosts
+# Add Just recipes
+echo "import \"/usr/share/ublue-os/just/90-osterreich.just\"" >>/usr/share/ublue-os/justfile
 
 # Set up services
 systemctl enable podman.socket
