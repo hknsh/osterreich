@@ -1,4 +1,4 @@
-export image_name := env("IMAGE_NAME", "image-template") # output image name, usually same as repo name, change as needed
+export image_name := env("IMAGE_NAME", "osterreich")
 export default_tag := env("DEFAULT_TAG", "latest")
 export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest")
 
@@ -94,8 +94,29 @@ build $target_image=image_name $tag=default_tag:
         BUILD_ARGS+=("--build-arg" "SHA_HEAD_SHORT=$(git rev-parse --short HEAD)")
     fi
 
+    # Labels
+    LABELS=()
+    LABELS+=("--label" "org.opencontainers.image.created=$(date -u +%Y\-%m\-%d\T%H\:%M\:%S\Z)")
+    LABELS+=("--label" "org.opencontainers.image.description=${IMAGE_DESC:+""}")
+    LABELS+=("--label" "org.opencontainers.image.documentation=https://raw.githubusercontent.com/${repo_organization}/${image_name}/refs/heads/main/README.md")
+    LABELS+=("--label" "org.opencontainers.image.source=https://raw.githubusercontent.com/${repo_organization}/${image_name}/refs/heads/main/Containerfile")
+    LABELS+=("--label" "org.opencontainers.image.title=${image_name}")
+    LABELS+=("--label" "org.opencontainers.image.url=https://github.com/${repo_organization}/${image_name}")
+    LABELS+=("--label" "org.opencontainers.image.vendor=${repo_organization}")
+    LABELS+=("--label" "org.opencontainers.image.version=${target_image}.$(date -u +%Y\-%m\-%d)")
+    LABELS+=("--label" "io.artifacthub.package.readme-url=https://raw.githubusercontent.com/${repo_organization}/${image_name}/refs/heads/main/README.md")
+    LABELS+=("--label" "io.artifacthub.package.deprecated=false")
+    keywords=("bootc" "ostree" "ublue" "universal-blue" "osterreich")
+    LABELS+=("--label" "io.artifacthub.package.keywords=$(IFS=, ; echo "${keywords[*]}")")
+    LABELS+=("--label" "io.artifacthub.package.license=Apache-2.0")
+    LABELS+=("--label" "io.artifacthub.package.logo-url=https://avatars.githubusercontent.com/u/${repo_owner_id}?s=200&v=4")
+    LABELS+=("--label" "io.artifacthub.package.prerelease=false")
+    LABELS+=("--label" "io.artifacthub.package.maintainers=[{\"name\": \"hknsh\", \"email\": \"me@hknsh.com\"}]")
+    LABELS+=("--label" "containers.bootc=1")
+
     podman build \
         "${BUILD_ARGS[@]}" \
+        "${LABELS[@]}" \
         --pull=newer \
         --tag "${target_image}:${tag}" \
         .
@@ -292,7 +313,6 @@ spawn-vm rebuild="0" type="qcow2" ram="6G":
       --network-user-mode \
       --vsock=false --pass-ssh-key=false \
       -i ./output/**/*.{{ type }}
-
 
 # Runs shell check on all Bash scripts
 lint:
