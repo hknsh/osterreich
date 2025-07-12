@@ -12,7 +12,7 @@ osterreich-install-flatpaks:
     set -euo pipefail
 
     echo "Installing flatpaks..."
-    xargs -a <(curl --retry 3 -sL https://raw.githubusercontent.com/hknsh/osterreich/main/repo_files/flatpaks) flatpaks --system -y install
+    xargs -a <(curl --retry 3 -sL https://raw.githubusercontent.com/hknsh/osterreich/main/repo_files/flatpaks) flatpak --system -y install
     echo "Installation complete."
 
 [group('Install')]
