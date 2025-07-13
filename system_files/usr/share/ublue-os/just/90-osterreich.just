@@ -4,7 +4,7 @@ default:
 
 # Install flatpaks and brews
 [group('Install')]
-osterreich-install: osterreich-install-flatpaks osterreich-install-brew
+osterreich-install: osterreich-install-flatpaks osterreich-install-brews
 
 [group('Install')]
 osterreich-install-flatpaks:
