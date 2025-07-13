@@ -5,8 +5,6 @@ dnf5 install -y \
     neovim \
     emacs \
     buildah \
-    kitty \
-    zsh \
     powerline-fonts \
     hexchat \
     ardour7 \

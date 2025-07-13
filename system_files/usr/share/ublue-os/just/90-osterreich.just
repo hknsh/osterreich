@@ -2,9 +2,9 @@
 default:
     @just --list
 
-# Install flatpaks
+# Install flatpaks and brews
 [group('Install')]
-osterreich-install: osterreich-install-flatpaks
+osterreich-install: osterreich-install-flatpaks osterreich-install-brew
 
 [group('Install')]
 osterreich-install-flatpaks:
@@ -29,6 +29,13 @@ osterreich-configure-ufw:
     #!/usr/bin/env bash
     set -euo pipefail
 
+    if [ ! -f /var/lib/ufw/user.rules ]; then
+        echo "Adding default files..."
+        mkdir -p /var/lib/ufw
+        cp /usr/share/ufw/iptables/user.rules /var/lib/ufw/user.rules
+        cp /usr/share/ufw/iptables/user6.rules /var/lib/ufw/user6.rules
+    fi
+
     systemctl stop firewalld
     systemctl disable firewalld
     systemctl mask firewalld
@@ -40,18 +47,19 @@ osterreich-configure-ufw:
     ufw default deny incoming
     ufw default allow outgoing
 
+    ufw delete allow SSH
     ufw deny 22/tcp
     ufw allow out dns
     ufw allow out ntp
 
-    ufw allow from 192.168.0.0/24 to any port 3000
-    ufw allow from 192.168.0.0/24 to any port 3001
-    ufw allow from 192.168.0.0/24 to any port 8080
-    ufw allow from 192.168.0.0/24 to any port 8443
-    ufw allow from 192.168.0.0/24 to any port 5173
+    ufw allow from 192.168.0.0/24 to any port 3000 comment 'Web Server (LAN)'
+    ufw allow from 192.168.0.0/24 to any port 3001 comment 'Web Server (LAN)'
+    ufw allow from 192.168.0.0/24 to any port 8080 comment 'Web Server (LAN)'
+    ufw allow from 192.168.0.0/24 to any port 8443 comment 'Web Server (LAN)'
+    ufw allow from 192.168.0.0/24 to any port 5173 comment 'Web Server (LAN)'
 
-    ufw allow 1714:1764/tcp
-    ufw allow 1714:1764/udp
+    ufw allow from 192.168.0.0/24 to any port 1714:1764 proto tcp comment 'KDE Connect/tcp (LAN)'
+    ufw allow from 192.168.0.0/24 to any port 1714:1764 proto udp comment 'KDE Connect/udp (LAN)'
 
     ufw allow in on lo to any port 22 proto tcp comment 'SSH/localhost'
     ufw allow from 192.168.0.0/24 to any port 22 proto tcp comment 'SSH/LAN'

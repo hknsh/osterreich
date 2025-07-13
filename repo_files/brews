@@ -3,9 +3,11 @@ rustup
 llvm
 gh
 go
+node
 yarn
 pnpm
 python
 gleam
 elixir
 haskell-stack
+stow
